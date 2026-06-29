@@ -79,67 +79,57 @@ const currentSmack = computed(() => {
 
   if (worstVsPar >= 4) {
     return { text: pick([
-      `${worst.name} shot a ${worst.strokes}. That's not a golf score, that's a bowling score.`,
-      `${worst.name} carded a ${worst.strokes}. The scorecard just filed a restraining order.`,
-      `${worst.name} took ${worst.strokes} on a par ${par}. At this pace they'll finish Tuesday.`,
-      `${worst.name} playing par ${par} like it's a par ${worst.strokes}. Committed to the bit.`,
-      `${worst.name} with a ${worst.strokes}. Group behind offered to let them play through. Backwards.`,
-      `${worst.name} needed ${worst.strokes}. That hole owes them a refund and an apology.`,
+      `${worst.name} carded a ${worst.strokes} on a par ${par}. The handicap is filing for divorce.`,
+      `${worst.name} took ${worst.strokes} on a par ${par}. That is ${worstVsPar} over. The math is mathing.`,
+      `${worst.name} with a ${worst.strokes}. The course rating did not account for this.`,
+      `${worst.name} went ${worst.strokes}. That's a snowman. Don't frame that scorecard.`,
+      `${worst.name} dropped a ${worst.strokes}. Negative strokes gained on that hole. Impressive.`,
     ]), emoji: "🏛️" }
   }
   if (worstVsPar >= 3) {
     return { text: pick([
-      `${worst.name} with a smooth ${worst.strokes}. Consistency is key — too bad they consistently do that.`,
-      `${worst.name} found every hazard on that hole. Might as well have brought a snorkel.`,
-      `${worst.name} took ${worst.strokes} on a par ${par}. Pro tip: don't do that.`,
-      `${worst.name} playing exactly like someone who golfs ${worstVsPar} times a year.`,
-      `${worst.name} with a ${worst.strokes}. The Copper Point Special. On sale this week only.`,
-      `${worst.name} dropped a ${worst.strokes}. That's not a score, it's a cry for help in 3 languages.`,
+      `${worst.name} with a ${worst.strokes}. Triple bogey territory. The handicap is watching.`,
+      `${worst.name} took ${worst.strokes} on a par ${par}. That's ${worstVsPar} over. Routine stuff.`,
+      `${worst.name} went ${worst.strokes}. The rest of the group is now adjusting their expectations.`,
+      `${worst.name} with a ${worst.strokes}. That hole had a 0.0% chance of happening. It happened.`,
     ]), emoji: "🧭" }
   }
   if (worstVsPar >= 2) {
     return { text: pick([
-      `${worst.name} with a ${worst.strokes}. Still better than being at work. Barely.`,
-      `${worst.name} bogeyed a par ${par} so hard it should've been a double. Oh wait.`,
-      `${worst.name} took ${worst.strokes}. The cart girl saw the whole thing and just drove faster.`,
-      `${worst.name} playing like they're trying to keep their handicap honest. Noble.`,
-      `${worst.name} with a ${worst.strokes}. The only thing worse than that score is their excuse.`,
+      `${worst.name} with a ${worst.strokes}. Double. Routine maintenance.`,
+      `${worst.name} went ${worst.strokes} on a par ${par}. The math works out to ${worstVsPar} over. It does not look good.`,
+      `${worst.name} dropped a ${worst.strokes}. That is net bogey golf. At best.`,
     ]), emoji: "📉" }
   }
   if (worstVsPar >= 1) {
     return { text: pick([
-      `${worst.name} with a ${worst.strokes}. Money where it matters, score where it doesn't.`,
-      `${worst.name} bogeyed. Regroup on the next tee. That's the Copper Point way.`,
-      `${worst.name} dropped a ${worst.strokes}. Not their best, not their worst. Just like their whole life.`,
-      `${worst.name} went ${worst.strokes}. That's ${worstVsPar} more than the architect intended.`,
-      `${worst.name} playing that hole like it owes them money. It does not.`,
+      `${worst.name} with a ${worst.strokes}. Bogey. The course wins that hole.`,
+      `${worst.name} went ${worst.strokes}. ${worstVsPar} over. The architect is vindicated.`,
+      `${worst.name} bogeyed. The definition of par plus one. Which is ${worst.strokes}.`,
+      `${worst.name} dropped a ${worst.strokes}. Slightly worse than average. Which is par.`,
     ]), emoji: "💼" }
   }
 
   if (worstUnderPar.length >= 2) {
     return { text: pick([
-      `${worstUnderPar.map(s => s.name).join(' & ')} playing well. Who died and made them golfers?`,
-      `${worstUnderPar.map(s => s.name).join(' & ')} under par. I'll get the check. Apocalypse is here.`,
-      `${worstUnderPar.map(s => s.name).join(' & ')} with a good hole. Mark your calendars.`,
-      `${worstUnderPar.map(s => s.name).join(' & ')} with a ${worstUnderPar.map(s => s.strokes).join(' & ')}. First time for everything.`,
+      `${worstUnderPar.map(s => s.name).join(' & ')} under par. You love to see it. They love to tell you about it.`,
+      `${worstUnderPar.map(s => s.name).join(' & ')} with a combined ${worstUnderPar.reduce((a, s) => a + s.strokes, 0)}. The math is mathing. In their favor.`,
+      `${worstUnderPar.map(s => s.name).join(' & ')} under par. The rest of the group is taking notes.`,
     ]), emoji: "🔍" }
   }
   if (worstUnderPar.length === 1) {
     return { text: pick([
-      `${worstUnderPar[0].name} with a ${worstUnderPar[0].strokes}. Even a blind squirrel finds a nut.`,
-      `${worstUnderPar[0].name} actually played that hole well. The sun shines on every dog's ass once.`,
-      `${worstUnderPar[0].name} scoring well. Someone's due for a blow-up hole after this one.`,
-      `${worstUnderPar[0].name} with a ${worstUnderPar[0].strokes}. Don't let it go to their head — too late.`,
+      `${worstUnderPar[0].name} with a ${worstUnderPar[0].strokes}. ${worstUnderPar[0].strokes < par ? 'Birdie. Rare air.' : 'Par. Acceptable.'}`,
+      `${worstUnderPar[0].name} went ${worstUnderPar[0].strokes}. The handicap is confused.`,
       `${worstUnderPar[0].name} under par. The golf gods are distracted. Enjoy it while it lasts.`,
     ]), emoji: "🎯" }
   }
 
   if (worstTeamVsPar >= 4) {
     return { text: pick([
-      `Team ${worstTeam[0]} combining for ${worstTeam[1]}. Two great minds, one terrible score.`,
-      `Team ${worstTeam[0]} with ${worstTeam[1]} strokes. They say golf is a team sport. They were wrong.`,
-      `Team ${worstTeam[0]} went ${worstTeam[1]}. That's ${worstTeamVsPar} over expectation. Read a book.`,
-      `Team ${worstTeam[0]} with a ${worstTeam[1]}. Partners in crime. The crime is golf.`,
+      `Team ${worstTeam[0]} combining for ${worstTeam[1]}. That is ${worstTeamVsPar} over. Two great minds, one terrible score.`,
+      `Team ${worstTeam[0]} with ${worstTeam[1]}. The math says that is ${worstTeamVsPar} over expectation. The math is not wrong.`,
+      `Team ${worstTeam[0]} went ${worstTeam[1]} on a par ${par * 2}. That is a net score that requires a calculator.`,
     ]), emoji: "👥" }
   }
 
@@ -147,9 +137,9 @@ const currentSmack = computed(() => {
     `That hole happened. Let's never speak of it again.`,
     `Average golf. Which is to say, bad.`,
     `The course is winning. You are losing. This is fine.`,
-    `That hole was golf. Pure, unadulterated, mediocre golf.`,
+    `That was golf. Points were not awarded.`,
     `The Point strikes again. That's why they call it The Point.`,
-    `Some golf was played that hole. That's all we can say.`,
+    `Some golf was played that hole. That is all we can say.`,
   ]), emoji: "🚶" }
 })
 
