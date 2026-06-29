@@ -66,6 +66,18 @@ onUnmounted(() => {
           />
           <div class="team-info">
             <span class="team-name">{{ team.name }}</span>
+            <div class="player-lines" v-if="team.players">
+              <span v-for="p in team.players" :key="p.id" class="player-line">
+                <img
+                  :src="`/avatars/${p.name.toLowerCase()}.jpg`"
+                  class="mini-avatar"
+                  @error="($event.target as HTMLImageElement).style.display='none'"
+                />
+                <span>{{ p.name }}</span>
+                <span class="player-line-score">{{ p.total }}</span>
+                <span class="player-line-vspar" :class="vsParClass(p.vsPar)">{{ formatVsPar(p.vsPar) }}</span>
+              </span>
+            </div>
             <span class="team-thru">Thru {{ holesPlayed(team) || '-' }} holes &middot; Round {{ formatVsPar(team.roundVsPar) }}</span>
           </div>
           <div class="total-column">
@@ -142,18 +154,18 @@ onUnmounted(() => {
 
 .header h2 {
   font-size: 20px;
-  font-weight: 700;
+  font-weight: 800;
 }
 
 .live-badge {
   font-size: 12px;
-  font-weight: 600;
-  color: #22c55e;
+  font-weight: 700;
+  color: var(--green);
 }
 
 .round-name {
   font-size: 14px;
-  color: #64748b;
+  color: var(--text-secondary);
   margin-bottom: 12px;
 }
 
@@ -164,11 +176,15 @@ onUnmounted(() => {
 }
 
 .team-card {
-  background: #1e293b;
-  border-radius: 14px;
+  background: var(--bg-card);
+  border-radius: 16px;
   overflow: hidden;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
+}
+
+.team-card:active {
+  background: var(--bg-elevated);
 }
 
 .team-row {
@@ -180,10 +196,22 @@ onUnmounted(() => {
 }
 
 .position {
-  font-size: 18px;
-  font-weight: 700;
-  color: #64748b;
-  min-width: 24px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 800;
+  flex-shrink: 0;
+  background: var(--text-muted);
+  color: white;
+}
+
+.position:nth-child(1) {
+  background: var(--gold);
+  color: #0b0b12;
 }
 
 .team-avatar {
@@ -200,13 +228,58 @@ onUnmounted(() => {
 
 .team-name {
   font-size: 16px;
-  font-weight: 600;
+  font-weight: 700;
   display: block;
+}
+
+.player-lines {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 4px 0 2px;
+}
+
+.player-line {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.player-line-score {
+  margin-left: auto;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  min-width: 20px;
+  text-align: right;
+  color: var(--text-primary);
+}
+
+.player-line-vspar {
+  font-size: 11px;
+  font-weight: 600;
+  min-width: 22px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.player-line-vspar.under { color: var(--green); }
+.player-line-vspar.over { color: var(--red); }
+.player-line-vspar.even { color: var(--text-muted); }
+
+.mini-avatar {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
 }
 
 .team-thru {
   font-size: 12px;
-  color: #64748b;
+  color: var(--text-muted);
 }
 
 .total-column {
@@ -218,26 +291,27 @@ onUnmounted(() => {
 
 .team-total {
   font-size: 20px;
-  font-weight: 700;
+  font-weight: 800;
   font-variant-numeric: tabular-nums;
   line-height: 1;
+  color: var(--text-primary);
 }
 
 .team-vs-par {
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 700;
   font-variant-numeric: tabular-nums;
 }
 
-.team-vs-par.under { color: #22c55e; }
-.team-vs-par.over { color: #ef4444; }
-.team-vs-par.even { color: #64748b; }
+.team-vs-par.under { color: var(--green); }
+.team-vs-par.over { color: var(--red); }
+.team-vs-par.even { color: var(--text-muted); }
 
 .breakdown {
-  border-top: 1px solid #334155;
   padding: 12px 16px;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
+  border-top: 1px solid rgba(255,255,255,0.06);
 }
 
 .breakdown-row {
@@ -249,8 +323,8 @@ onUnmounted(() => {
 }
 
 .bd-label {
-  min-width: 36px;
-  color: #64748b;
+  min-width: 72px;
+  color: var(--text-muted);
   font-weight: 600;
   flex-shrink: 0;
 }
@@ -261,24 +335,24 @@ onUnmounted(() => {
   font-variant-numeric: tabular-nums;
 }
 
-.bd-cell.dim { color: #64748b; }
-.bd-cell.total { color: #94a3b8; }
+.bd-cell.dim { color: var(--text-muted); }
+.bd-cell.total { color: var(--text-secondary); }
 
 .bd-cell.score { font-weight: 600; }
-.bd-cell.score.under { color: #22c55e; }
-.bd-cell.score.over { color: #ef4444; }
-.bd-cell.score.even { color: #e2e8f0; }
+.bd-cell.score.under { color: var(--green); }
+.bd-cell.score.over { color: var(--red); }
+.bd-cell.score.even { color: var(--text-primary); }
 
 .bd-cell.score { font-weight: 500; }
 .team-row-bd .bd-cell.score { font-weight: 700; }
-.total-row-bd .bd-cell.total { font-weight: 700; color: #e2e8f0; }
-.player-label { font-size: 11px; color: #94a3b8; display: flex; align-items: center; gap: 4px; }
-.team-label { font-size: 11px; color: #e2e8f0; font-weight: 700; }
+.total-row-bd .bd-cell.total { font-weight: 700; color: var(--text-primary); }
+.player-label { font-size: 11px; color: var(--text-secondary); display: flex; align-items: center; gap: 4px; min-width: 72px; }
+.team-label { font-size: 11px; color: var(--text-primary); font-weight: 700; }
 .bd-avatar { width: 16px; height: 16px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
 
 .empty {
   text-align: center;
-  color: #64748b;
+  color: var(--text-muted);
   padding: 48px 0;
 }
 </style>

@@ -33,7 +33,7 @@ function selectRound(round: any) {
 <template>
   <div class="home">
     <div class="home-content">
-      <h1 class="title">Golf Scorekeeper</h1>
+      <h1 class="title"><span class="title-purple">Golf</span> Scorekeeper</h1>
       <p class="subtitle">Copper Point — Round 1</p>
 
       <div class="create-section">
@@ -85,13 +85,17 @@ function selectRound(round: any) {
 
 .title {
   font-size: 28px;
-  font-weight: 700;
+  font-weight: 800;
   text-align: center;
+}
+
+.title-purple {
+  color: var(--accent);
 }
 
 .subtitle {
   text-align: center;
-  color: #94a3b8;
+  color: var(--text-secondary);
   font-size: 14px;
   margin-top: -16px;
 }
@@ -106,15 +110,16 @@ function selectRound(round: any) {
   width: 100%;
   padding: 14px 16px;
   border-radius: 12px;
-  border: 1px solid #334155;
-  background: #1e293b;
-  color: #e2e8f0;
+  border: 1px solid rgba(255,255,255,0.08);
+  background: var(--bg-card);
+  color: var(--text-primary);
   font-size: 16px;
   outline: none;
+  transition: border-color 0.15s;
 }
 
 .input:focus {
-  border-color: #3b82f6;
+  border-color: var(--accent);
 }
 
 .btn-primary {
@@ -122,11 +127,16 @@ function selectRound(round: any) {
   padding: 14px;
   border-radius: 12px;
   border: none;
-  background: #3b82f6;
+  background: var(--accent);
   color: white;
   font-size: 16px;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
+  transition: background 0.15s;
+}
+
+.btn-primary:active {
+  background: var(--accent-hover);
 }
 
 .btn-primary:disabled {
@@ -140,10 +150,11 @@ function selectRound(round: any) {
 }
 
 .existing h3 {
-  font-size: 14px;
-  color: #64748b;
+  font-size: 13px;
+  color: var(--text-muted);
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.08em;
+  font-weight: 700;
 }
 
 .round-card {
@@ -151,13 +162,18 @@ function selectRound(round: any) {
   justify-content: space-between;
   align-items: center;
   padding: 14px 16px;
-  border-radius: 12px;
-  background: #1e293b;
+  border-radius: 16px;
+  background: var(--bg-card);
   cursor: pointer;
+  transition: background 0.15s;
+}
+
+.round-card:active {
+  background: var(--bg-elevated);
 }
 
 .date {
   font-size: 13px;
-  color: #64748b;
+  color: var(--text-muted);
 }
 </style>

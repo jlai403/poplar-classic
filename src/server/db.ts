@@ -171,15 +171,18 @@ export function getLeaderboardData(roundId: number) {
 
     const players = teamPlayers.map(p => {
       const pHoles: Record<number, { strokes: number; vsPar: number }> = {}
+      let total = 0
+      let playedPar = 0
       for (let h = 1; h <= 18; h++) {
         const s = roundScores.find(s => s.holeNumber === h && s.playerId === p.id)
         const strokes = s?.strokes ?? 0
-        pHoles[h] = {
-          strokes,
-          vsPar: strokes > 0 ? strokes - COURSE_PAR[h - 1] : 0,
-        }
+        const par = COURSE_PAR[h - 1]
+        pHoles[h] = { strokes, vsPar: strokes > 0 ? strokes - par : 0 }
+        total += strokes
+        if (strokes > 0) playedPar += par
       }
-      return { id: p.id, name: p.name, holes: pHoles }
+      const vsPar = total > 0 ? total - playedPar : 0
+      return { id: p.id, name: p.name, holes: pHoles, total, vsPar }
     })
 
     return {

@@ -82,7 +82,7 @@ const currentSmack = computed(() => {
       `${worst.name} carded a ${worst.strokes} on a par ${par}. The handicap is filing for divorce.`,
       `${worst.name} took ${worst.strokes} on a par ${par}. That is ${worstVsPar} over. The math is mathing.`,
       `${worst.name} with a ${worst.strokes}. The course rating did not account for this.`,
-      `${worst.name} went ${worst.strokes}. That's a snowman. Don't frame that scorecard.`,
+      `${worst.name} went ${worst.strokes}. ${worst.strokes === 8 ? "That's a snowman." : "That's a lot of golf."} Don't frame that scorecard.`,
       `${worst.name} dropped a ${worst.strokes}. Negative strokes gained on that hole. Impressive.`,
     ]), emoji: "🏛️" }
   }
@@ -207,9 +207,9 @@ onMounted(async () => {
 <template>
   <div class="score-entry">
     <div class="hole-nav">
-      <button class="hole-arrow" @click="prevHole">◀</button>
+      <button class="hole-arrow" @pointerdown.prevent="prevHole">◀</button>
       <span class="hole-label">Hole {{ currentHole }} <span class="hole-par">Par {{ currentPar }}</span></span>
-      <button class="hole-arrow" @click="nextHole">▶</button>
+      <button class="hole-arrow" @pointerdown.prevent="nextHole">▶</button>
     </div>
 
     <div class="smack-banner" v-if="currentSmack">
@@ -230,9 +230,9 @@ onMounted(async () => {
             <span class="player-name">{{ p.name }}</span>
           </div>
           <div class="score-controls">
-            <button class="btn-minus" @click="subStroke(p.id)">−</button>
+            <button class="btn-minus" @pointerdown.prevent="subStroke(p.id)">−</button>
             <span class="score-display" :class="scoreClass(p.id)">{{ getStroke(p.id) || '-' }}</span>
-            <button class="btn-plus" @click="addStroke(p.id)">+</button>
+            <button class="btn-plus" @pointerdown.prevent="addStroke(p.id)">+</button>
           </div>
         </div>
       </div>
@@ -262,32 +262,34 @@ onMounted(async () => {
   justify-content: center;
   gap: 16px;
   padding: 10px 12px;
-  border-bottom: 1px solid #334155;
   flex-shrink: 0;
 }
 
 .hole-arrow {
-  width: 48px;
-  height: 48px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
-  border: 1px solid #334155;
-  background: #1e293b;
-  color: #e2e8f0;
-  font-size: 20px;
+  border: none;
+  background: var(--bg-elevated);
+  color: var(--text-secondary);
+  font-size: 18px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  transition: background 0.15s, color 0.15s;
 }
 
 .hole-arrow:active {
-  background: #334155;
+  background: var(--accent);
+  color: white;
 }
 
 .hole-label {
   font-size: 20px;
-  font-weight: 600;
+  font-weight: 700;
   min-width: 130px;
   text-align: center;
   display: flex;
@@ -299,54 +301,56 @@ onMounted(async () => {
 .hole-par {
   font-size: 13px;
   font-weight: 500;
-  color: #64748b;
+  color: var(--text-muted);
 }
 
 .smack-banner {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 6px 12px;
-  background: #161b22;
-  border-bottom: 1px solid #21262d;
+  padding: 8px 12px;
+  background: var(--bg-card);
   flex-shrink: 0;
+  border-left: 3px solid var(--accent);
+  margin: 0 12px;
+  border-radius: 8px;
 }
 
 .smack-emoji {
-  font-size: 18px;
+  font-size: 16px;
   flex-shrink: 0;
 }
 
 .smack-text {
-  font-size: 14px;
-  color: #8b949e;
+  font-size: 13px;
+  color: var(--text-secondary);
   line-height: 1.4;
 }
 
 .player-list {
   flex: 1;
   overflow-y: auto;
-  padding: 6px 12px;
+  padding: 4px 12px;
 }
 
 .team-group {
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 }
 
 .team-header {
-  font-size: 13px;
-  font-weight: 600;
-  color: #64748b;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-secondary);
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  padding: 6px 0 3px;
+  padding: 8px 0 4px;
 }
 
 .player-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 4px 0;
+  padding: 6px 0;
 }
 
 .player-info {
@@ -356,73 +360,65 @@ onMounted(async () => {
 }
 
 .player-avatar {
-  width: 32px;
-  height: 32px;
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
   object-fit: cover;
   flex-shrink: 0;
 }
 
 .player-name {
-  font-size: 16px;
-  font-weight: 500;
+  font-size: 15px;
+  font-weight: 600;
 }
 
 .score-controls {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
 }
 
 .btn-minus, .btn-plus {
-  width: 48px;
-  height: 48px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
   border: none;
-  font-size: 28px;
+  font-size: 20px;
   font-weight: 600;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
+  background: var(--bg-elevated);
+  color: var(--text-secondary);
   -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  transition: background 0.15s, color 0.15s;
+  line-height: 1;
 }
 
-.btn-minus {
-  background: #450a0a;
-  color: #fca5a5;
-}
-
-.btn-minus:active {
-  background: #7f1d1d;
-}
-
-.btn-plus {
-  background: #052e16;
-  color: #86efac;
-}
-
-.btn-plus:active {
-  background: #14532d;
+.btn-minus:active, .btn-plus:active {
+  background: var(--accent);
+  color: white;
 }
 
 .score-display {
-  font-size: 32px;
-  font-weight: 700;
-  min-width: 36px;
+  font-size: 36px;
+  font-weight: 800;
+  min-width: 40px;
   text-align: center;
   font-variant-numeric: tabular-nums;
+  line-height: 1;
 }
 
-.score-display.under { color: #22c55e; }
-.score-display.over { color: #ef4444; }
-.score-display.even { color: #e2e8f0; }
+.score-display.under { color: var(--green); }
+.score-display.over { color: var(--red); }
+.score-display.even { color: var(--text-primary); }
 
 .totals-bar {
   display: flex;
-  border-top: 1px solid #334155;
-  background: #1e293b;
-  padding: 8px 12px;
+  background: var(--bg-surface);
+  padding: 10px 12px;
   flex-shrink: 0;
 }
 
@@ -436,31 +432,34 @@ onMounted(async () => {
 
 .total-name {
   font-size: 11px;
-  color: #64748b;
-  font-weight: 600;
+  color: var(--text-muted);
+  font-weight: 700;
   text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 .total-score {
-  font-size: 18px;
-  font-weight: 700;
+  font-size: 20px;
+  font-weight: 800;
   font-variant-numeric: tabular-nums;
+  color: var(--text-primary);
 }
 
 .total-round {
-  font-size: 10px;
-  color: #64748b;
+  font-size: 11px;
+  color: var(--text-muted);
+  font-weight: 600;
 }
 
 @media (max-width: 380px) {
   .hole-nav { gap: 12px; padding: 8px 8px; }
-  .hole-arrow { width: 44px; height: 44px; font-size: 18px; }
+  .hole-arrow { width: 36px; height: 36px; font-size: 16px; }
   .hole-label { font-size: 18px; min-width: 100px; }
   .player-list { padding: 4px 8px; }
-  .player-name { font-size: 14px; min-width: 60px; }
-  .btn-minus, .btn-plus { width: 44px; height: 44px; font-size: 24px; }
-  .score-display { font-size: 28px; min-width: 30px; }
-  .totals-bar { padding: 6px 8px; }
-  .total-score { font-size: 16px; }
+  .player-name { font-size: 14px; }
+  .btn-minus, .btn-plus { width: 32px; height: 32px; font-size: 18px; }
+  .score-display { font-size: 30px; min-width: 32px; }
+  .totals-bar { padding: 8px 8px; }
+  .total-score { font-size: 18px; }
 }
 </style>
