@@ -59,6 +59,11 @@ onUnmounted(() => {
       <div v-for="(team, idx) in teams" :key="team.id" class="team-card" @click="toggleTeam(team.id)">
         <div class="team-row">
           <span class="position">{{ idx + 1 }}</span>
+          <img
+            :src="`/avatars/${team.name.toLowerCase()}.jpg`"
+            class="team-avatar"
+            @error="($event.target as HTMLImageElement).style.display='none'"
+          />
           <div class="team-info">
             <span class="team-name">{{ team.name }}</span>
             <span class="team-thru">Thru {{ holesPlayed(team) || '-' }} holes &middot; Round {{ formatVsPar(team.roundVsPar) }}</span>
@@ -78,8 +83,25 @@ onUnmounted(() => {
             <span class="bd-label">Par</span>
             <span v-for="h in 18" :key="h" class="bd-cell dim">{{ team.holes[h]?.par || '-' }}</span>
           </div>
-          <div class="breakdown-row">
-            <span class="bd-label">Score</span>
+          <div v-for="p in team.players" :key="p.id" class="breakdown-row">
+            <span class="bd-label player-label">
+              <img
+                :src="`/avatars/${p.name.toLowerCase()}.jpg`"
+                class="bd-avatar"
+                @error="($event.target as HTMLImageElement).style.display='none'"
+              />
+              {{ p.name }}
+            </span>
+            <span
+              v-for="h in 18" :key="h"
+              class="bd-cell score"
+              :class="p.holes[h]?.strokes > 0 ? vsParClass(p.holes[h].vsPar) : ''"
+            >
+              {{ p.holes[h]?.strokes || '-' }}
+            </span>
+          </div>
+          <div class="breakdown-row team-row-bd">
+            <span class="bd-label team-label">Team</span>
             <span
               v-for="h in 18" :key="h"
               class="bd-cell score"
@@ -88,7 +110,7 @@ onUnmounted(() => {
               {{ team.holes[h]?.strokes || '-' }}
             </span>
           </div>
-          <div class="breakdown-row">
+          <div class="breakdown-row total-row-bd">
             <span class="bd-label">Total</span>
             <span v-for="h in 18" :key="h" class="bd-cell total">{{ team.holes[h]?.roundTotal || '-' }}</span>
           </div>
@@ -107,7 +129,7 @@ onUnmounted(() => {
   flex: 1;
   display: flex;
   flex-direction: column;
-  padding: 16px;
+  padding: 12px;
   overflow-y: auto;
 }
 
@@ -115,11 +137,11 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 4px;
+  margin-bottom: 2px;
 }
 
 .header h2 {
-  font-size: 22px;
+  font-size: 20px;
   font-weight: 700;
 }
 
@@ -132,13 +154,13 @@ onUnmounted(() => {
 .round-name {
   font-size: 14px;
   color: #64748b;
-  margin-bottom: 16px;
+  margin-bottom: 12px;
 }
 
 .cards {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
 }
 
 .team-card {
@@ -152,15 +174,24 @@ onUnmounted(() => {
 .team-row {
   display: flex;
   align-items: center;
-  padding: 16px;
-  gap: 12px;
+  padding: 14px;
+  gap: 10px;
+  min-height: 48px;
 }
 
 .position {
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 700;
   color: #64748b;
-  min-width: 28px;
+  min-width: 24px;
+}
+
+.team-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
 }
 
 .team-info {
@@ -168,7 +199,7 @@ onUnmounted(() => {
 }
 
 .team-name {
-  font-size: 17px;
+  font-size: 16px;
   font-weight: 600;
   display: block;
 }
@@ -186,7 +217,7 @@ onUnmounted(() => {
 }
 
 .team-total {
-  font-size: 22px;
+  font-size: 20px;
   font-weight: 700;
   font-variant-numeric: tabular-nums;
   line-height: 1;
@@ -237,6 +268,13 @@ onUnmounted(() => {
 .bd-cell.score.under { color: #22c55e; }
 .bd-cell.score.over { color: #ef4444; }
 .bd-cell.score.even { color: #e2e8f0; }
+
+.bd-cell.score { font-weight: 500; }
+.team-row-bd .bd-cell.score { font-weight: 700; }
+.total-row-bd .bd-cell.total { font-weight: 700; color: #e2e8f0; }
+.player-label { font-size: 11px; color: #94a3b8; display: flex; align-items: center; gap: 4px; }
+.team-label { font-size: 11px; color: #e2e8f0; font-weight: 700; }
+.bd-avatar { width: 16px; height: 16px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
 
 .empty {
   text-align: center;

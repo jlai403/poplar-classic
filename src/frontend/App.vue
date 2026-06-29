@@ -60,11 +60,11 @@ function onRoundSelected(round: any) {
   align-items: center;
   justify-content: center;
   gap: 6px;
-  padding: 10px 0;
+  padding: 14px 0;
   border: none;
   background: transparent;
   color: #64748b;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 600;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;

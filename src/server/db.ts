@@ -147,7 +147,8 @@ export function getCourseInfo() {
 export function getLeaderboardData(roundId: number) {
   const teams = store.teams.map(team => {
     const startingTotal = STARTING_TOTALS[team.name] ?? 0
-    const teamPlayerIds = store.players.filter(p => p.teamId === team.id).map(p => p.id)
+    const teamPlayers = store.players.filter(p => p.teamId === team.id)
+    const teamPlayerIds = teamPlayers.map(p => p.id)
     const roundScores = store.scores.filter(s => s.roundId === roundId && teamPlayerIds.includes(s.playerId))
 
     const holes: Record<number, { strokes: number; roundTotal: number; par: number; vsPar: number }> = {}
@@ -168,6 +169,19 @@ export function getLeaderboardData(roundId: number) {
       .reduce((sum: number, h: any) => sum + h.par, 0)
     const roundVsPar = roundCumulative > 0 ? roundCumulative - playedPar : 0
 
+    const players = teamPlayers.map(p => {
+      const pHoles: Record<number, { strokes: number; vsPar: number }> = {}
+      for (let h = 1; h <= 18; h++) {
+        const s = roundScores.find(s => s.holeNumber === h && s.playerId === p.id)
+        const strokes = s?.strokes ?? 0
+        pHoles[h] = {
+          strokes,
+          vsPar: strokes > 0 ? strokes - COURSE_PAR[h - 1] : 0,
+        }
+      }
+      return { id: p.id, name: p.name, holes: pHoles }
+    })
+
     return {
       id: team.id,
       name: team.name,
@@ -176,6 +190,7 @@ export function getLeaderboardData(roundId: number) {
       total: startingTotal + roundCumulative,
       roundVsPar,
       holes,
+      players,
     }
   })
 

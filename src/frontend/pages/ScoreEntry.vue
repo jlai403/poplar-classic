@@ -182,7 +182,14 @@ onMounted(async () => {
       <div v-for="team in teamGroups" :key="team.name" class="team-group">
         <div class="team-header">{{ team.name }}</div>
         <div v-for="p in team.players" :key="p.id" class="player-row">
-          <span class="player-name">{{ p.name }}</span>
+          <div class="player-info">
+            <img
+              :src="`/avatars/${p.name.toLowerCase()}.jpg`"
+              class="player-avatar"
+              @error="($event.target as HTMLImageElement).style.display='none'"
+            />
+            <span class="player-name">{{ p.name }}</span>
+          </div>
           <div class="score-controls">
             <button class="btn-minus" @click="subStroke(p.id)">−</button>
             <span class="score-display" :class="scoreClass(p.id)">{{ getStroke(p.id) || '-' }}</span>
@@ -214,20 +221,20 @@ onMounted(async () => {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 24px;
-  padding: 12px 16px;
+  gap: 16px;
+  padding: 10px 12px;
   border-bottom: 1px solid #334155;
   flex-shrink: 0;
 }
 
 .hole-arrow {
-  width: 44px;
-  height: 44px;
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
   border: 1px solid #334155;
   background: #1e293b;
   color: #e2e8f0;
-  font-size: 18px;
+  font-size: 20px;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -240,9 +247,9 @@ onMounted(async () => {
 }
 
 .hole-label {
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 600;
-  min-width: 120px;
+  min-width: 130px;
   text-align: center;
   display: flex;
   flex-direction: column;
@@ -251,7 +258,7 @@ onMounted(async () => {
 }
 
 .hole-par {
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 500;
   color: #64748b;
 }
@@ -260,19 +267,19 @@ onMounted(async () => {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 8px 16px;
+  padding: 6px 12px;
   background: #161b22;
   border-bottom: 1px solid #21262d;
   flex-shrink: 0;
 }
 
 .smack-emoji {
-  font-size: 16px;
+  font-size: 18px;
   flex-shrink: 0;
 }
 
 .smack-text {
-  font-size: 13px;
+  font-size: 14px;
   color: #8b949e;
   line-height: 1.4;
 }
@@ -280,47 +287,60 @@ onMounted(async () => {
 .player-list {
   flex: 1;
   overflow-y: auto;
-  padding: 8px 16px;
+  padding: 6px 12px;
 }
 
 .team-group {
-  margin-bottom: 12px;
+  margin-bottom: 10px;
 }
 
 .team-header {
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 600;
   color: #64748b;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  padding: 8px 0 4px;
+  padding: 6px 0 3px;
 }
 
 .player-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 6px 0;
+  padding: 4px 0;
+}
+
+.player-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.player-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
 }
 
 .player-name {
-  font-size: 17px;
+  font-size: 16px;
   font-weight: 500;
-  min-width: 80px;
 }
 
 .score-controls {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 8px;
 }
 
 .btn-minus, .btn-plus {
-  width: 44px;
-  height: 44px;
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
   border: none;
-  font-size: 24px;
+  font-size: 28px;
   font-weight: 600;
   cursor: pointer;
   display: flex;
@@ -348,9 +368,9 @@ onMounted(async () => {
 }
 
 .score-display {
-  font-size: 24px;
+  font-size: 32px;
   font-weight: 700;
-  min-width: 32px;
+  min-width: 36px;
   text-align: center;
   font-variant-numeric: tabular-nums;
 }
@@ -363,7 +383,7 @@ onMounted(async () => {
   display: flex;
   border-top: 1px solid #334155;
   background: #1e293b;
-  padding: 10px 16px;
+  padding: 8px 12px;
   flex-shrink: 0;
 }
 
@@ -391,5 +411,17 @@ onMounted(async () => {
 .total-round {
   font-size: 10px;
   color: #64748b;
+}
+
+@media (max-width: 380px) {
+  .hole-nav { gap: 12px; padding: 8px 8px; }
+  .hole-arrow { width: 44px; height: 44px; font-size: 18px; }
+  .hole-label { font-size: 18px; min-width: 100px; }
+  .player-list { padding: 4px 8px; }
+  .player-name { font-size: 14px; min-width: 60px; }
+  .btn-minus, .btn-plus { width: 44px; height: 44px; font-size: 24px; }
+  .score-display { font-size: 28px; min-width: 30px; }
+  .totals-bar { padding: 6px 8px; }
+  .total-score { font-size: 16px; }
 }
 </style>
