@@ -1,12 +1,12 @@
 services:
   golf:
-    build: .
+    image: ghcr.io/jlai403/poplar-classic:latest
     ports:
-      - "3000:3000"
+      - "3050:3000"
     volumes:
       - golf-data:/data
     environment:
-      - DB_PATH=/data/golf.db
+      - DB_PATH=/data/golf.json
     restart: unless-stopped
 
 volumes:
