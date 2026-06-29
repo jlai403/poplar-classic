@@ -40,6 +40,29 @@ const teamTotals = computed(() => {
 
 const currentPar = computed(() => coursePar.value[currentHole.value - 1] ?? 4)
 
+const SMACK_TALK: Record<number, { text: string; emoji: string }> = {
+  1:  { text: "Opening hole. Breathe deep. It only gets worse from here.", emoji: "😮‍💨" },
+  2:  { text: "Short par 3. Blade this one and just keep walking.", emoji: "🩳" },
+  3:  { text: "Reachable in 2. So is the hazard. Temptation is undefeated.", emoji: "🎲" },
+  4:  { text: "Dogleg right. Your slice has been waiting its whole life for this.", emoji: "🐕" },
+  5:  { text: "Long par 5. Great chance to card your first snowman of the day.", emoji: "❄️" },
+  6:  { text: "The green slopes away. Good luck holding it. You'll need it.", emoji: "🧊" },
+  7:  { text: "Par 3 with a false front. Short is dead. Long is dead. Welcome to golf.", emoji: "⚰️" },
+  8:  { text: "Tight fairway. The trees have eaten more Pro V1s than you've bought.", emoji: "🌲" },
+  9:  { text: "Make the turn in style. Or don't. History suggests 'don't'.", emoji: "🔄" },
+  10: { text: "Back 9 starts here. The scorecard is already disappointed in you.", emoji: "📋" },
+  11: { text: "Water left. Water right. Hope you brought extra balls.", emoji: "🌊" },
+  12: { text: "Deceptive par 3. Looks easy. That's the trap. You walked into it.", emoji: "🪤" },
+  13: { text: "The hardest hole on the course. The course is laughing.", emoji: "🏔️" },
+  14: { text: "Short par 4. Driver would be stupid. You're probably going to hit driver.", emoji: "🤦" },
+  15: { text: "Plays longer than the card says. Your score will reflect that.", emoji: "🧾" },
+  16: { text: "Bunker left. Bunker right. Your ball is going somewhere.", emoji: "⏳" },
+  17: { text: "Penultimate hole. Pressure's on. You've choked on less.", emoji: "😰" },
+  18: { text: "Finish strong. Or don't. The beer doesn't care about your score.", emoji: "🍺" },
+}
+
+const currentSmack = computed(() => SMACK_TALK[currentHole.value])
+
 function scoreClass(playerId: number) {
   const strokes = getStroke(playerId)
   if (strokes === 0) return ''
@@ -107,6 +130,11 @@ onMounted(async () => {
       <button class="hole-arrow" @click="prevHole">◀</button>
       <span class="hole-label">Hole {{ currentHole }} <span class="hole-par">Par {{ currentPar }}</span></span>
       <button class="hole-arrow" @click="nextHole">▶</button>
+    </div>
+
+    <div class="smack-banner" v-if="currentSmack">
+      <span class="smack-emoji">{{ currentSmack.emoji }}</span>
+      <span class="smack-text">{{ currentSmack.text }}</span>
     </div>
 
     <div class="player-list">
@@ -185,6 +213,27 @@ onMounted(async () => {
   font-size: 12px;
   font-weight: 500;
   color: #64748b;
+}
+
+.smack-banner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: #161b22;
+  border-bottom: 1px solid #21262d;
+  flex-shrink: 0;
+}
+
+.smack-emoji {
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.smack-text {
+  font-size: 13px;
+  color: #8b949e;
+  line-height: 1.4;
 }
 
 .player-list {
