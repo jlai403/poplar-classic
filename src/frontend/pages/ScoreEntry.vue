@@ -40,28 +40,69 @@ const teamTotals = computed(() => {
 
 const currentPar = computed(() => coursePar.value[currentHole.value - 1] ?? 4)
 
-const SMACK_TALK: Record<number, { text: string; emoji: string }> = {
-  1:  { text: "Opening hole. Breathe deep. It only gets worse from here.", emoji: "😮‍💨" },
-  2:  { text: "Short par 3. Blade this one and just keep walking.", emoji: "🩳" },
-  3:  { text: "Reachable in 2. So is the hazard. Temptation is undefeated.", emoji: "🎲" },
-  4:  { text: "Dogleg right. Your slice has been waiting its whole life for this.", emoji: "🐕" },
-  5:  { text: "Long par 5. Great chance to card your first snowman of the day.", emoji: "❄️" },
-  6:  { text: "The green slopes away. Good luck holding it. You'll need it.", emoji: "🧊" },
-  7:  { text: "Par 3 with a false front. Short is dead. Long is dead. Welcome to golf.", emoji: "⚰️" },
-  8:  { text: "Tight fairway. The trees have eaten more Pro V1s than you've bought.", emoji: "🌲" },
-  9:  { text: "Make the turn in style. Or don't. History suggests 'don't'.", emoji: "🔄" },
-  10: { text: "Back 9 starts here. The scorecard is already disappointed in you.", emoji: "📋" },
-  11: { text: "Water left. Water right. Hope you brought extra balls.", emoji: "🌊" },
-  12: { text: "Deceptive par 3. Looks easy. That's the trap. You walked into it.", emoji: "🪤" },
-  13: { text: "The hardest hole on the course. The course is laughing.", emoji: "🏔️" },
-  14: { text: "Short par 4. Driver would be stupid. You're probably going to hit driver.", emoji: "🤦" },
-  15: { text: "Plays longer than the card says. Your score will reflect that.", emoji: "🧾" },
-  16: { text: "Bunker left. Bunker right. Your ball is going somewhere.", emoji: "⏳" },
-  17: { text: "Penultimate hole. Pressure's on. You've choked on less.", emoji: "😰" },
-  18: { text: "Finish strong. Or don't. The beer doesn't care about your score.", emoji: "🍺" },
-}
+const prevHoleScores = computed(() => {
+  if (currentHole.value <= 1) return null
+  const hole = currentHole.value - 1
+  const par = coursePar.value[hole - 1] ?? 4
+  return players.value.map(p => ({
+    ...p,
+    strokes: scores.value[`${p.id}-${hole}`] || 0,
+    vsPar: (scores.value[`${p.id}-${hole}`] || 0) - par,
+  }))
+})
 
-const currentSmack = computed(() => SMACK_TALK[currentHole.value])
+const currentSmack = computed(() => {
+  const data = prevHoleScores.value
+  if (!data) return null
+
+  const played = data.filter(s => s.strokes > 0)
+  if (played.length === 0) return null
+
+  const par = coursePar.value[currentHole.value - 2] ?? 4
+  const ranked = [...played].sort((a, b) => b.strokes - a.strokes)
+  const worst = ranked[0]
+
+  const teamTotals = Object.entries(
+    played.reduce((acc, s) => {
+      acc[s.teamName] = (acc[s.teamName] || 0) + s.strokes
+      return acc
+    }, {} as Record<string, number>)
+  ).sort((a, b) => b[1] - a[1])
+  const worstTeam = teamTotals[0]
+  const bestTeam = teamTotals[teamTotals.length - 1]
+
+  const worstVsPar = worst.strokes - par
+  const worstTeamVsPar = worstTeam[1] - par * 2
+
+  const pick = (arr: string[]) => arr[Math.floor(Math.random() * arr.length)]
+  const worstUnderPar = played.filter(s => s.strokes < par)
+
+  if (worstVsPar >= 4) {
+    return { text: pick([`${worst.name} carded a ${worst.strokes} on a par ${par}. The course is building a statue in their honor.`, `${worst.name} took ${worst.strokes} on a par ${par}. That's not a score, it's a cry for help.`, `${worst.name} just scored ${worst.strokes}. The green has filed a restraining order.`]), emoji: "🏛️" }
+  }
+  if (worstVsPar >= 3) {
+    return { text: pick([`${worst.name} needed a caddie, a compass, and a miracle. Took ${worst.strokes} on a par ${par}.`, `${worst.name} with a ${worst.strokes}. The only thing keeping them from the tour is talent.`, `${worst.name} playing par ${par} like it's a 12. Respect the commitment to the bit.`]), emoji: "🧭" }
+  }
+  if (worstVsPar >= 2) {
+    return { text: pick([`${worst.name} with a smooth ${worst.strokes}. Handicap's gonna need a therapist after this round.`, `${worst.name} took ${worst.strokes}. That's ${worstVsPar} more than they planned and ${Math.abs(worstVsPar)} more than the course deserves.`, `${worst.name} bogeyed a par ${par} like it's a personality trait.`]), emoji: "📉" }
+  }
+  if (worstVsPar >= 1) {
+    return { text: pick([`${worst.name} bogeyed a par ${par}. Textbook. Unfortunately the textbook was written by someone who can't golf.`, `${worst.name} with a ${worst.strokes}. Not great, not terrible. Just like their whole game.`, `${worst.name} dropping a ${worst.strokes} on a par ${par}. The definition of mid.`]), emoji: "💼" }
+  }
+
+  if (worstUnderPar.length >= 2) {
+    return { text: pick([`${worstUnderPar.map(s => s.name).join(' & ')} playing that hole well. Check their bags for cavity backs and a soul.`, `${worstUnderPar.map(s => s.name).join(' & ')} under par. The apocalypse is here.`]), emoji: "🔍" }
+  }
+  if (worstUnderPar.length === 1) {
+    return { text: pick([`${worstUnderPar[0].name} actually parred that. The sun shines on every dog's ass once.`, `${worstUnderPar[0].name} with a ${worstUnderPar[0].strokes}. Even a blind squirrel finds a nut.`]), emoji: "🎯" }
+  }
+
+  if (worstTeamVsPar >= 4) {
+    return { text: `Team ${worstTeam[0]} combined for ${worstTeam[1]} on a par ${par * 2}. That's teamwork. The bad kind.`, emoji: "👥" }
+  }
+
+  return { text: pick([`That hole happened. Let's never speak of it again.`, `Average golf. Which is to say, bad.`, `The course is winning. You are losing. This is fine.`]), emoji: "🚶" }
+})
 
 function scoreClass(playerId: number) {
   const strokes = getStroke(playerId)
