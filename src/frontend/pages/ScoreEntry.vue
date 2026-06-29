@@ -78,30 +78,79 @@ const currentSmack = computed(() => {
   const worstUnderPar = played.filter(s => s.strokes < par)
 
   if (worstVsPar >= 4) {
-    return { text: pick([`${worst.name} carded a ${worst.strokes} on a par ${par}. The course is building a statue in their honor.`, `${worst.name} took ${worst.strokes} on a par ${par}. That's not a score, it's a cry for help.`, `${worst.name} just scored ${worst.strokes}. The green has filed a restraining order.`]), emoji: "🏛️" }
+    return { text: pick([
+      `${worst.name} shot a ${worst.strokes}. That's not a golf score, that's a bowling score.`,
+      `${worst.name} carded a ${worst.strokes}. The scorecard just filed a restraining order.`,
+      `${worst.name} took ${worst.strokes} on a par ${par}. At this pace they'll finish Tuesday.`,
+      `${worst.name} playing par ${par} like it's a par ${worst.strokes}. Committed to the bit.`,
+      `${worst.name} with a ${worst.strokes}. Group behind offered to let them play through. Backwards.`,
+      `${worst.name} needed ${worst.strokes}. That hole owes them a refund and an apology.`,
+    ]), emoji: "🏛️" }
   }
   if (worstVsPar >= 3) {
-    return { text: pick([`${worst.name} needed a caddie, a compass, and a miracle. Took ${worst.strokes} on a par ${par}.`, `${worst.name} with a ${worst.strokes}. The only thing keeping them from the tour is talent.`, `${worst.name} playing par ${par} like it's a 12. Respect the commitment to the bit.`]), emoji: "🧭" }
+    return { text: pick([
+      `${worst.name} with a smooth ${worst.strokes}. Consistency is key — too bad they consistently do that.`,
+      `${worst.name} found every hazard on that hole. Might as well have brought a snorkel.`,
+      `${worst.name} took ${worst.strokes} on a par ${par}. Pro tip: don't do that.`,
+      `${worst.name} playing exactly like someone who golfs ${worstVsPar} times a year.`,
+      `${worst.name} with a ${worst.strokes}. The Copper Point Special. On sale this week only.`,
+      `${worst.name} dropped a ${worst.strokes}. That's not a score, it's a cry for help in 3 languages.`,
+    ]), emoji: "🧭" }
   }
   if (worstVsPar >= 2) {
-    return { text: pick([`${worst.name} with a smooth ${worst.strokes}. Handicap's gonna need a therapist after this round.`, `${worst.name} took ${worst.strokes}. That's ${worstVsPar} more than they planned and ${Math.abs(worstVsPar)} more than the course deserves.`, `${worst.name} bogeyed a par ${par} like it's a personality trait.`]), emoji: "📉" }
+    return { text: pick([
+      `${worst.name} with a ${worst.strokes}. Still better than being at work. Barely.`,
+      `${worst.name} bogeyed a par ${par} so hard it should've been a double. Oh wait.`,
+      `${worst.name} took ${worst.strokes}. The cart girl saw the whole thing and just drove faster.`,
+      `${worst.name} playing like they're trying to keep their handicap honest. Noble.`,
+      `${worst.name} with a ${worst.strokes}. The only thing worse than that score is their excuse.`,
+    ]), emoji: "📉" }
   }
   if (worstVsPar >= 1) {
-    return { text: pick([`${worst.name} bogeyed a par ${par}. Textbook. Unfortunately the textbook was written by someone who can't golf.`, `${worst.name} with a ${worst.strokes}. Not great, not terrible. Just like their whole game.`, `${worst.name} dropping a ${worst.strokes} on a par ${par}. The definition of mid.`]), emoji: "💼" }
+    return { text: pick([
+      `${worst.name} with a ${worst.strokes}. Money where it matters, score where it doesn't.`,
+      `${worst.name} bogeyed. Regroup on the next tee. That's the Copper Point way.`,
+      `${worst.name} dropped a ${worst.strokes}. Not their best, not their worst. Just like their whole life.`,
+      `${worst.name} went ${worst.strokes}. That's ${worstVsPar} more than the architect intended.`,
+      `${worst.name} playing that hole like it owes them money. It does not.`,
+    ]), emoji: "💼" }
   }
 
   if (worstUnderPar.length >= 2) {
-    return { text: pick([`${worstUnderPar.map(s => s.name).join(' & ')} playing that hole well. Check their bags for cavity backs and a soul.`, `${worstUnderPar.map(s => s.name).join(' & ')} under par. The apocalypse is here.`]), emoji: "🔍" }
+    return { text: pick([
+      `${worstUnderPar.map(s => s.name).join(' & ')} playing well. Who died and made them golfers?`,
+      `${worstUnderPar.map(s => s.name).join(' & ')} under par. I'll get the check. Apocalypse is here.`,
+      `${worstUnderPar.map(s => s.name).join(' & ')} with a good hole. Mark your calendars.`,
+      `${worstUnderPar.map(s => s.name).join(' & ')} with a ${worstUnderPar.map(s => s.strokes).join(' & ')}. First time for everything.`,
+    ]), emoji: "🔍" }
   }
   if (worstUnderPar.length === 1) {
-    return { text: pick([`${worstUnderPar[0].name} actually parred that. The sun shines on every dog's ass once.`, `${worstUnderPar[0].name} with a ${worstUnderPar[0].strokes}. Even a blind squirrel finds a nut.`]), emoji: "🎯" }
+    return { text: pick([
+      `${worstUnderPar[0].name} with a ${worstUnderPar[0].strokes}. Even a blind squirrel finds a nut.`,
+      `${worstUnderPar[0].name} actually played that hole well. The sun shines on every dog's ass once.`,
+      `${worstUnderPar[0].name} scoring well. Someone's due for a blow-up hole after this one.`,
+      `${worstUnderPar[0].name} with a ${worstUnderPar[0].strokes}. Don't let it go to their head — too late.`,
+      `${worstUnderPar[0].name} under par. The golf gods are distracted. Enjoy it while it lasts.`,
+    ]), emoji: "🎯" }
   }
 
   if (worstTeamVsPar >= 4) {
-    return { text: `Team ${worstTeam[0]} combined for ${worstTeam[1]} on a par ${par * 2}. That's teamwork. The bad kind.`, emoji: "👥" }
+    return { text: pick([
+      `Team ${worstTeam[0]} combining for ${worstTeam[1]}. Two great minds, one terrible score.`,
+      `Team ${worstTeam[0]} with ${worstTeam[1]} strokes. They say golf is a team sport. They were wrong.`,
+      `Team ${worstTeam[0]} went ${worstTeam[1]}. That's ${worstTeamVsPar} over expectation. Read a book.`,
+      `Team ${worstTeam[0]} with a ${worstTeam[1]}. Partners in crime. The crime is golf.`,
+    ]), emoji: "👥" }
   }
 
-  return { text: pick([`That hole happened. Let's never speak of it again.`, `Average golf. Which is to say, bad.`, `The course is winning. You are losing. This is fine.`]), emoji: "🚶" }
+  return { text: pick([
+    `That hole happened. Let's never speak of it again.`,
+    `Average golf. Which is to say, bad.`,
+    `The course is winning. You are losing. This is fine.`,
+    `That hole was golf. Pure, unadulterated, mediocre golf.`,
+    `The Point strikes again. That's why they call it The Point.`,
+    `Some golf was played that hole. That's all we can say.`,
+  ]), emoji: "🚶" }
 })
 
 function scoreClass(playerId: number) {
